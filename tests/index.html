@@ -8,6 +8,10 @@
 </head>
 <body>
 <style>
+    span{
+        display: block;
+    }
+
     .ok {
         color:green;
     }
@@ -30,9 +34,17 @@
         //Test #1
         var row = db.test.find({"id":69});
         if (typeof row === "object") {
-            document.getElementById("report").innerHTML = "<span class=ok>Test #1 OK: " + JSON.stringify(row) + "</span>";
+            document.getElementById("report").innerHTML += "<span class=ok>Test #1 OK: " + JSON.stringify(row) + "</span>";
         } else {
-            document.getElementById("report").innerHTML =  "<span class=err>Test #1 error</span>";
+            document.getElementById("report").innerHTML +=  "<span class=err>Test #1 error</span>";
+        }
+
+        //Test #2
+        var response = db.test.insert({"id":999999, "hash": "JKLGIUGBjgkasdtkshgb", "data": "2020-01-01 01:01:01"});
+        if (typeof response === "object") {
+            document.getElementById("report").innerHTML += "<span class=ok>Test #2 OK: " + JSON.stringify(response) + "</span>";
+        } else {
+            document.getElementById("report").innerHTML +=  "<span class=err>Test #2 error</span>";
         }
     </script>
 </body>
