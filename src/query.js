@@ -4,15 +4,23 @@ const fields = require("./fields.js");
 
 class Query
 {
+    /**
+     * @param collection {String}
+     * @param data {Array}
+     */
     constructor(collection, data){
         this.collection = collection;
         this.data       = data;
     }
 
+    /**
+     * @param where {Object}
+     * @returns {Array|null|boolean}
+     */
     find(where) {
         if (typeof where !== "object") {
             console.warn("The find() function call uses an object as an argument");
-            return;
+            return false;
         }
 
         if (this.data.length === 0) {
@@ -30,10 +38,14 @@ class Query
         return null;
     }
 
+    /**
+     * @param object {Object}
+     * @returns {Object|boolean}
+     */
     insert(object) {
         if (typeof object !== "object") {
             console.warn("The insert() function call uses an object as an argument")
-            return;
+            return false;
         }
 
         try {
