@@ -1,5 +1,7 @@
 "use strict"
 
+const fields = require("./fields.js");
+
 class Query
 {
     constructor(collection, data){
@@ -9,12 +11,12 @@ class Query
 
     find(where) {
         if (typeof where !== "object") {
-            console.warn("The find() function call uses an object as an argument")
+            console.warn("The find() function call uses an object as an argument");
             return;
         }
 
         if (this.data.length === 0) {
-            console.warn("Collection is empty");
+            return null;
         }
 
         for (let key in where) {
@@ -26,6 +28,24 @@ class Query
         }
 
         return null;
+    }
+
+    insert(object) {
+        if (typeof object !== "object") {
+            console.warn("The insert() function call uses an object as an argument")
+            return;
+        }
+
+        try {
+            this.data.push(object);
+        } catch (e) {
+            console.error(e);
+        }
+
+        db.sync();
+
+        object[fields.AUTO_INCREMENT] = this.data.length;
+        return object;
     }
 }
 
