@@ -15,7 +15,7 @@ class Query
 
     /**
      * @param where {Object}
-     * @returns {Array|null|boolean}
+     * @returns {Array|undefined|boolean}
      */
     find(where) {
         if (typeof where !== "object") {
@@ -24,18 +24,24 @@ class Query
         }
 
         if (this.data.length === 0) {
-            return null;
+            return undefined;
         }
 
-        for (let key in where) {
-            for (let id in this.data) {
-                if (this.data[id][key] !== undefined && this.data[id][key] === where[key]) {
-                    return this.data[id];
+        let findRow = this.data.filter(function (row) {
+            let obj = {};
+            for (let key in where) {
+                if (row[key] !== undefined) {
+                    obj[key] = row[key];
                 }
             }
+            return JSON.stringify(where) === JSON.stringify(obj)
+        });
+
+        if(findRow.length > 0) {
+            return findRow;
         }
 
-        return null;
+        return undefined;
     }
 
     /**

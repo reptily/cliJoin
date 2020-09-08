@@ -16,7 +16,7 @@
         color:green;
     }
 
-    .err: {
+    .err {
         color: red;
     }
 </style>
@@ -40,11 +40,43 @@
         }
 
         //Test #2
-        var response = db.test.insert({"id":999999, "hash": "JKLGIUGBjgkasdtkshgb", "data": "2020-01-01 01:01:01"});
-        if (typeof response === "object") {
-            document.getElementById("report").innerHTML += "<span class=ok>Test #2 OK: " + JSON.stringify(response) + "</span>";
+        row = db.test.find({"id":69, "hash": "a0874bf253ae3a4b551903c6cb1a0145"});
+        if (typeof row === "object") {
+            document.getElementById("report").innerHTML += "<span class=ok>Test #2 OK: " + JSON.stringify(row) + "</span>";
         } else {
             document.getElementById("report").innerHTML +=  "<span class=err>Test #2 error</span>";
+        }
+
+        //Test #3
+        row = db.test.find({"hash": "a0874bf253ae3a4b551903c6cb1a0145", "id":69});
+        if (typeof row === "object") {
+            document.getElementById("report").innerHTML += "<span class=ok>Test #3 OK: " + JSON.stringify(row) + "</span>";
+        } else {
+            document.getElementById("report").innerHTML +=  "<span class=err>Test #3 error</span>";
+        }
+
+        //Test #4
+        row = db.test.find({"id":69, "hash": "a0874bf253ae3a4b551903c6cb1a0145", "date":"2020-09-08 06:30:06"});
+        if (typeof row === "object") {
+            document.getElementById("report").innerHTML += "<span class=ok>Test #4 OK: " + JSON.stringify(row) + "</span>";
+        } else {
+            document.getElementById("report").innerHTML +=  "<span class=err>Test #4 error</span>";
+        }
+
+        //Test #5
+        row = db.test.find({"id":9999, "hash": "a0874bf253ae3a4b551903c6cb1a0145"});
+        if (typeof row === 'undefined') {
+            document.getElementById("report").innerHTML += "<span class=ok>Test #5 OK: " + JSON.stringify(row) + "</span>";
+        } else {
+            document.getElementById("report").innerHTML +=  "<span class=err>Test #5 error</span>";
+        }
+
+        //Test #6
+        var response = db.test.insert({"id":999999, "hash": "JKLGIUGBjgkasdtkshgb", "data": "2020-01-01 01:01:01"});
+        if (typeof response === "object") {
+            document.getElementById("report").innerHTML += "<span class=ok>Test #6 OK: " + JSON.stringify(response) + "</span>";
+        } else {
+            document.getElementById("report").innerHTML +=  "<span class=err>Test #6 error</span>";
         }
     </script>
 </body>
