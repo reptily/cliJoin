@@ -24,8 +24,12 @@ class cliJoin {
         }
     }
 
+    sync() {
+        localStorage.setItem(fields.STORE_DB, JSON.stringify(this.database));
+    }
+
     importDB() {
-        let json = localStorage.getItem(fields.NAME_STORE_DB);
+        let json = localStorage.getItem(fields.STORE_DB);
 
         if (json === null) {
             return [];

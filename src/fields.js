@@ -1,3 +1,4 @@
 module.exports = {
-    NAME_STORE_DB: '$___cliJoin_DB'
+    STORE_DB: '$___cliJoin_DB',
+    AUTO_INCREMENT: "_id",
 };
