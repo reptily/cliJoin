@@ -38,6 +38,7 @@ class Query
         });
 
         if(findRow.length > 0) {
+            findRow[fields.AUTO_INCREMENT] = 1;
             return findRow;
         }
 
