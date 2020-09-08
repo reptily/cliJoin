@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Test</title>
+    <script src="../build/cliJoin.js"></script>
+    <script src="./dbString.js"></script>
+</head>
+<body>
+<style>
+    .ok {
+        color:green;
+    }
+
+    .err: {
+        color: red;
+    }
+</style>
+<div id="report"></div>
+    <script>
+        if (typeof db !== "object") {
+            document.write("Error initialization framework");
+        }
+
+        localStorage.removeItem("$___cliJoin_DB");
+        localStorage.setItem("$___cliJoin_DB", jsonString);
+
+        db.load();
+
+        //Test #1
+        var row = db.test.find({"id":69});
+        if (typeof row === "object") {
+            document.getElementById("report").innerHTML = "<span class=ok>Test #1 OK: " + JSON.stringify(row) + "</span>";
+        } else {
+            document.getElementById("report").innerHTML =  "<span class=err>Test #1 error</span>";
+        }
+    </script>
+</body>
+</html>
