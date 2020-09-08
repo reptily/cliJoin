@@ -22,6 +22,17 @@
 </style>
 <div id="report"></div>
     <script>
+        let numberTest = 1;
+        function Test(item, type) {
+            if (typeof item === type) {
+                document.getElementById("report").innerHTML += "<span class=ok>Test #"+numberTest+" OK: " + JSON.stringify(item) + "</span>";
+            } else {
+                document.getElementById("report").innerHTML +=  "<span class=err>Test #"+numberTest+" error</span>";
+            }
+
+            numberTest++;
+        }
+
         if (typeof db !== "object") {
             document.write("Error initialization framework");
         }
@@ -31,53 +42,35 @@
 
         db.load();
 
-        //Test #1
-        var row = db.test.find({"id":69});
-        if (typeof row === "object") {
-            document.getElementById("report").innerHTML += "<span class=ok>Test #1 OK: " + JSON.stringify(row) + "</span>";
-        } else {
-            document.getElementById("report").innerHTML +=  "<span class=err>Test #1 error</span>";
-        }
+        Test(
+            db.test.find({"id":69}),
+            "object"
+        );
 
-        //Test #2
-        row = db.test.find({"id":69, "hash": "a0874bf253ae3a4b551903c6cb1a0145"});
-        if (typeof row === "object") {
-            document.getElementById("report").innerHTML += "<span class=ok>Test #2 OK: " + JSON.stringify(row) + "</span>";
-        } else {
-            document.getElementById("report").innerHTML +=  "<span class=err>Test #2 error</span>";
-        }
+        Test(
+            db.test.find({"id":69, "hash": "a0874bf253ae3a4b551903c6cb1a0145"}),
+            "object"
+        );
 
-        //Test #3
-        row = db.test.find({"hash": "a0874bf253ae3a4b551903c6cb1a0145", "id":69});
-        if (typeof row === "object") {
-            document.getElementById("report").innerHTML += "<span class=ok>Test #3 OK: " + JSON.stringify(row) + "</span>";
-        } else {
-            document.getElementById("report").innerHTML +=  "<span class=err>Test #3 error</span>";
-        }
+        Test(
+            db.test.find({"hash": "a0874bf253ae3a4b551903c6cb1a0145", "id":69}),
+            "object"
+        );
 
-        //Test #4
-        row = db.test.find({"id":69, "hash": "a0874bf253ae3a4b551903c6cb1a0145", "date":"2020-09-08 06:30:06"});
-        if (typeof row === "object") {
-            document.getElementById("report").innerHTML += "<span class=ok>Test #4 OK: " + JSON.stringify(row) + "</span>";
-        } else {
-            document.getElementById("report").innerHTML +=  "<span class=err>Test #4 error</span>";
-        }
+        Test(
+            db.test.find({"id":69, "hash": "a0874bf253ae3a4b551903c6cb1a0145", "date":"2020-09-08 06:30:06"}),
+            "object"
+        );
 
-        //Test #5
-        row = db.test.find({"id":9999, "hash": "a0874bf253ae3a4b551903c6cb1a0145"});
-        if (typeof row === 'undefined') {
-            document.getElementById("report").innerHTML += "<span class=ok>Test #5 OK: " + JSON.stringify(row) + "</span>";
-        } else {
-            document.getElementById("report").innerHTML +=  "<span class=err>Test #5 error</span>";
-        }
+        Test(
+            db.test.find({"id":9999, "hash": "a0874bf253ae3a4b551903c6cb1a0145"}),
+            "undefined"
+        );
 
-        //Test #6
-        var response = db.test.insert({"id":999999, "hash": "JKLGIUGBjgkasdtkshgb", "data": "2020-01-01 01:01:01"});
-        if (typeof response === "object") {
-            document.getElementById("report").innerHTML += "<span class=ok>Test #6 OK: " + JSON.stringify(response) + "</span>";
-        } else {
-            document.getElementById("report").innerHTML +=  "<span class=err>Test #6 error</span>";
-        }
+        Test(
+            db.test.insert({"id":999999, "hash": "JKLGIUGBjgkasdtkshgb", "data": "2020-01-01 01:01:01"}),
+            "object"
+        );
     </script>
 </body>
 </html>
