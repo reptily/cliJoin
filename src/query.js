@@ -56,7 +56,7 @@ class Query
 
         db.sync();
 
-        object[fields.AUTO_INCREMENT] = this.data.length;
+        object[fields.AUTO_INCREMENT] = this.data.length - 1;
         return object;
     }
 }
