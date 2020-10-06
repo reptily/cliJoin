@@ -23,11 +23,13 @@
 <div id="report"></div>
     <script>
         let numberTest = 1;
+        let startTime = new Date();
+
         function Test(item, type) {
             if (typeof item === type) {
                 document.getElementById("report").innerHTML += "<span class=ok>Test #"+numberTest+" OK: " + JSON.stringify(item) + "</span>";
             } else {
-                document.getElementById("report").innerHTML +=  "<span class=err>Test #"+numberTest+" error</span>";
+                document.getElementById("report").innerHTML +=  "<span class=err>Test #"+numberTest+" error type=" + typeof item + "</span>";
             }
 
             numberTest++;
@@ -43,7 +45,7 @@
         db.load();
 
         Test(
-            db.test.find({"id":69}),
+            db.test.find({"id":666}),
             "object"
         );
 
@@ -68,9 +70,72 @@
         );
 
         Test(
-            db.test.insert({"id":999999, "hash": "JKLGIUGBjgkasdtkshgb", "data": "2020-01-01 01:01:01"}),
+            db.test.insert({"id":9000000, "hash": "JKLGIUGBjgkasdtkshgb", "data": "2020-01-01 01:01:01"}),
             "object"
         );
+
+        db.test.insert({"id":90000001, "hash": "Werfjmmkdsouofj", "data": "2020-01-01 01:01:01", "model": [{"id":1, "name":"xxx"},{"id":2, "name":"yyy"}]});
+        db.test.insert({"id":90000002, "hash": "dfggfjhgf09u45hj", "data": "2020-01-01 01:01:01", "model": [{"id":3, "name":"zzz"},{"id":2, "name":"yyy"}]});
+        db.test.insert({"id":90000003, "hash": "fdg54gfddsf43gdfd", "data": "2020-01-01 01:01:01", "model": [{"id":5, "name":"ddd"},{"id":3, "name":"zzz"}], "sub":{"first":{"name":"foo"},"second":{"name":"bar"}}});
+
+        Test(
+            db.test.find({"id":{"<":3}}),
+            "object"
+        );
+
+        Test(
+            db.test.find({"id":{"<=":3}}),
+            "object"
+        );
+
+        Test(
+            db.test.find({"id":{">":90000002}}),
+            "object"
+        );
+
+        Test(
+            db.test.find({"id":{">=":90000002}}),
+            "object"
+        );
+
+        Test(
+            db.test.find({"id":{">=":90000002, "<=": 90000002}}),
+            "object"
+        );
+
+        Test(
+            db.test.find({"id":90000001, "model":{"id":2}}),
+            "object"
+        );
+
+        Test(
+            db.test.find({"id":90000001, "model":{"id":1, "name":"xxx"}}),
+            "object"
+        );
+
+        Test(
+            db.test.find({"id":90000001, "model": {"id": {">": 1}}}),
+            "object"
+        );
+
+        Test(
+            db.test.find({"id":90000001, "model":{"id":21111}}),
+            "undefined"
+        );
+
+        Test(
+            db.test.find({"id":90000001, "model":{"id":1, "name":"xddddddxx"}}),
+            "undefined"
+        );
+
+        Test(
+            db.test.find({"$id":777}),
+            "object"
+        );
+
+        let stopTime = new Date();
+
+        document.getElementById("report").innerHTML +=  "<span>Runtime: " + ((stopTime - startTime) / 1000) + " sec.</span>";
     </script>
 </body>
 </html>
