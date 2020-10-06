@@ -1,6 +1,7 @@
 "use strict"
 
 const fields = require("./fields.js");
+const Find = require("./query/find.js");
 
 class Query
 {
@@ -27,21 +28,10 @@ class Query
             return undefined;
         }
 
-        let findRow = this.data.filter(function (row) {
-            let obj = {};
-            for (let key in where) {
-                if (row[key] !== undefined) {
-                    obj[key] = row[key];
-                }
-            }
-            return JSON.stringify(where) === JSON.stringify(obj)
-        });
+        let objFind = new Find;
+        let object = objFind.getRowsByObject(where, this.data);
 
-        if(findRow.length > 0) {
-            return findRow;
-        }
-
-        return undefined;
+        return object.length > 0 ? object : undefined;
     }
 
     /**
