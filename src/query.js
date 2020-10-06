@@ -55,6 +55,45 @@ class Query
         object[fields.AUTO_INCREMENT] = this.data.length - 1;
         return object;
     }
+
+    /**
+     * @param where object
+     * @param object object
+     * @returns boolean|[]
+     */
+    update(where, object) {
+        if (typeof object !== "object" || typeof where !== "object") {
+            console.warn("The update() function call uses an object as an argument")
+            return false;
+        }
+
+        let rows = this.find(where);
+        let updatedObjects = [];
+        rows.forEach(row => {
+            this.data[row[fields.AUTO_INCREMENT]] = Object.assign(this.data[row[fields.AUTO_INCREMENT]], object);
+        });
+
+        db.sync();
+
+        return updatedObjects;
+    }
+
+    /**
+     * @param where
+     */
+    delete(where) {
+        if (typeof where !== "object") {
+            console.warn("The delete() function call uses an object as an argument")
+            return false;
+        }
+
+        let rows = this.find(where);
+        rows.forEach(row => {
+            this.data[row[fields.AUTO_INCREMENT]] = null;
+        });
+
+        db.sync();
+    }
 }
 
 module.exports = Query;

@@ -25,8 +25,18 @@
         let numberTest = 1;
         let startTime = new Date();
 
-        function Test(item, type) {
+        /**
+         * @param item Object - object to compare
+         * @param type string - which type must match response
+         * @param pattern mixed - which pattern must match response
+         */
+        function Test(item, type, pattern) {
             if (typeof item === type) {
+                if (pattern !== undefined && JSON.stringify(pattern) !== JSON.stringify(item)) {
+                    document.getElementById("report").innerHTML +=  "<span class=err>Test #"+numberTest+" error obj=" + JSON.stringify(item) + "</span>";
+                    numberTest++;
+                    return;
+                }
                 document.getElementById("report").innerHTML += "<span class=ok>Test #"+numberTest+" OK: " + JSON.stringify(item) + "</span>";
             } else {
                 document.getElementById("report").innerHTML +=  "<span class=err>Test #"+numberTest+" error type=" + typeof item + "</span>";
@@ -46,22 +56,26 @@
 
         Test(
             db.test.find({"id":666}),
-            "object"
+            "object",
+            [{"id":666,"hash":"ed772ffe28bec0db5267436bfa34a908","date":"2020-09-08 06:30:06","$id":665}]
         );
 
         Test(
             db.test.find({"id":69, "hash": "a0874bf253ae3a4b551903c6cb1a0145"}),
-            "object"
+            "object",
+            [{"id":69,"hash":"a0874bf253ae3a4b551903c6cb1a0145","date":"2020-09-08 06:30:06","$id":68}]
         );
 
         Test(
             db.test.find({"hash": "a0874bf253ae3a4b551903c6cb1a0145", "id":69}),
-            "object"
+            "object",
+            [{"id":69,"hash":"a0874bf253ae3a4b551903c6cb1a0145","date":"2020-09-08 06:30:06","$id":68}]
         );
 
         Test(
             db.test.find({"id":69, "hash": "a0874bf253ae3a4b551903c6cb1a0145", "date":"2020-09-08 06:30:06"}),
-            "object"
+            "object",
+            [{"id":69,"hash":"a0874bf253ae3a4b551903c6cb1a0145","date":"2020-09-08 06:30:06","$id":68}]
         );
 
         Test(
@@ -71,7 +85,8 @@
 
         Test(
             db.test.insert({"id":9000000, "hash": "JKLGIUGBjgkasdtkshgb", "data": "2020-01-01 01:01:01"}),
-            "object"
+            "object",
+            {"id":9000000,"hash":"JKLGIUGBjgkasdtkshgb","data":"2020-01-01 01:01:01","$id":62501}
         );
 
         db.test.insert({"id":90000001, "hash": "Werfjmmkdsouofj", "data": "2020-01-01 01:01:01", "model": [{"id":1, "name":"xxx"},{"id":2, "name":"yyy"}]});
@@ -80,42 +95,50 @@
 
         Test(
             db.test.find({"id":{"<":3}}),
-            "object"
+            "object",
+            [{"id":1,"hash":"1c79a1a7fe6cc8bbf24f8e2bf14bb3e7","date":"2020-09-08 06:30:06","$id":0},{"id":2,"hash":"c4a2a7e593f82286ff9e0d77a28be49a","date":"2020-09-08 06:30:06","$id":1}]
         );
 
         Test(
             db.test.find({"id":{"<=":3}}),
-            "object"
+            "object",
+            [{"id":1,"hash":"1c79a1a7fe6cc8bbf24f8e2bf14bb3e7","date":"2020-09-08 06:30:06","$id":0},{"id":2,"hash":"c4a2a7e593f82286ff9e0d77a28be49a","date":"2020-09-08 06:30:06","$id":1},{"id":3,"hash":"79b7884f74552a31b2aaac835071046e","date":"2020-09-08 06:30:06","$id":2}]
         );
 
         Test(
             db.test.find({"id":{">":90000002}}),
-            "object"
+            "object",
+            [{"id":90000003,"hash":"fdg54gfddsf43gdfd","data":"2020-01-01 01:01:01","model":[{"id":5,"name":"ddd"},{"id":3,"name":"zzz"}],"sub":{"first":{"name":"foo"},"second":{"name":"bar"}},"$id":62504}]
         );
 
         Test(
             db.test.find({"id":{">=":90000002}}),
-            "object"
+            "object",
+            [{"id":90000002,"hash":"dfggfjhgf09u45hj","data":"2020-01-01 01:01:01","model":[{"id":3,"name":"zzz"},{"id":2,"name":"yyy"}],"$id":62503},{"id":90000003,"hash":"fdg54gfddsf43gdfd","data":"2020-01-01 01:01:01","model":[{"id":5,"name":"ddd"},{"id":3,"name":"zzz"}],"sub":{"first":{"name":"foo"},"second":{"name":"bar"}},"$id":62504}]
         );
 
         Test(
             db.test.find({"id":{">=":90000002, "<=": 90000002}}),
-            "object"
+            "object",
+            [{"id":90000002,"hash":"dfggfjhgf09u45hj","data":"2020-01-01 01:01:01","model":[{"id":3,"name":"zzz"},{"id":2,"name":"yyy"}],"$id":62503},{"id":90000003,"hash":"fdg54gfddsf43gdfd","data":"2020-01-01 01:01:01","model":[{"id":5,"name":"ddd"},{"id":3,"name":"zzz"}],"sub":{"first":{"name":"foo"},"second":{"name":"bar"}},"$id":62504}]
         );
 
         Test(
             db.test.find({"id":90000001, "model":{"id":2}}),
-            "object"
+            "object",
+            [{"id":90000001,"hash":"Werfjmmkdsouofj","data":"2020-01-01 01:01:01","model":[{"id":1,"name":"xxx"},{"id":2,"name":"yyy"}],"$id":62502}]
         );
 
         Test(
             db.test.find({"id":90000001, "model":{"id":1, "name":"xxx"}}),
-            "object"
+            "object",
+            [{"id":90000001,"hash":"Werfjmmkdsouofj","data":"2020-01-01 01:01:01","model":[{"id":1,"name":"xxx"},{"id":2,"name":"yyy"}],"$id":62502}]
         );
 
         Test(
             db.test.find({"id":90000001, "model": {"id": {">": 1}}}),
-            "object"
+            "object",
+            [{"id":90000001,"hash":"Werfjmmkdsouofj","data":"2020-01-01 01:01:01","model":[{"id":1,"name":"xxx"},{"id":2,"name":"yyy"}],"$id":62502}]
         );
 
         Test(
@@ -130,7 +153,48 @@
 
         Test(
             db.test.find({"$id":777}),
+            "object",
+            [{"id":778,"hash":"0f450800c51fe52efa2ccf29ed6dd530","date":"2020-09-08 06:30:06"}]
+        );
+
+        db.test.update({"id":33}, {"hash":"jjjjjjjjjjj"});
+
+        Test(
+            db.test.find({"id":33}),
+            "object",
+            [{"id":33,"hash":"jjjjjjjjjjj","date":"2020-09-08 06:30:06","$id":32}]
+        );
+
+        db.create('hash');
+        Test(
+            db.hash,
             "object"
+        );
+
+        db.hash.insert({"test":"fdsfdsfdsdbcds7tc78sd"});
+        Test(
+            db.hash.find({"$id":0}),
+            "object",
+            [{"test":"fdsfdsfdsdbcds7tc78sd","$id":0}]
+        );
+
+        Test(
+            db.hash.find({}),
+            "object",
+            [{"test":"fdsfdsfdsdbcds7tc78sd","$id":0}]
+        );
+
+        db.hash.delete({"$id":0});
+        Test(
+            db.hash.find({"$id":0}),
+            "object",
+            [null]
+        );
+
+        db.drop('hash');
+        Test(
+            db.hash,
+            "undefined"
         );
 
         let stopTime = new Date();
