@@ -8,6 +8,8 @@ class cliJoin {
         this.load();
     }
 
+
+
     /**
      * Initialization framework
      * @returns boolean
@@ -54,6 +56,22 @@ class cliJoin {
         } catch (e) {
             return [];
         }
+    }
+
+    /**
+     * @param nameCollection string
+     */
+    create(nameCollection) {
+        this[nameCollection] = new Query(nameCollection,[]);
+        this.sync();
+    }
+
+    /**
+     * @param nameCollection tring
+     */
+    drop(nameCollection) {
+        delete this[nameCollection];
+        this.sync();
     }
 
 }

@@ -3,6 +3,13 @@
 const fields = require("../fields.js");
 
 class Find {
+
+    /**
+     *
+     * @param where object
+     * @param data object
+     * @returns {[]}
+     */
     getRowsByObject(where, data) {
         let object = [];
 
@@ -13,7 +20,7 @@ class Find {
 
         for (let key in data) {
             if (this.checkRow(data[key], where) === true) {
-                data[key][fields.AUTO_INCREMENT] = key;
+                data[key][fields.AUTO_INCREMENT] = parseInt(key);
                 object.push(data[key]);
             }
         }
@@ -21,10 +28,22 @@ class Find {
         return object;
     }
 
+    /**
+     *
+     * @param row object
+     * @param where object
+     * @returns boolean
+     */
     checkRow(row, where) {
         return this.select(row, where) === true;
     }
 
+    /**
+     *
+     * @param row object
+     * @param where object
+     * @returns {boolean}
+     */
     select(row, where) {
         const comparisonRegex = /^\>$|^\>\=$|^\<$|^\<\=$/gm;
         let amountOfNotSatisfaction = 0;
@@ -35,7 +54,7 @@ class Find {
 
             if (typeof valueWhere !== "object") {
                 let valueRow = row !== null ? row[key] : null;
-                if (this.reconciliation(key, comparison, valueWhere, valueRow) === false) {
+                if (this.reconciliation(comparison, valueWhere, valueRow) === false) {
                     amountOfNotSatisfaction++;
                 }
             } else {
@@ -46,7 +65,7 @@ class Find {
                     if (comparisonRegex.test(comparison) === true) {
                         let valueRow = row !== null ? row[key] : null;
                         valueWhere = valueWhere[comparison];
-                        if (this.reconciliation(key, comparison, valueWhere, valueRow) === false) {
+                        if (this.reconciliation(comparison, valueWhere, valueRow) === false) {
                             amountOfNotSatisfaction++;
                         }
                     } else {
@@ -66,7 +85,7 @@ class Find {
                             amountOfNotSatisfaction++;
                         }
                     } else {
-                        if (this.select(partObjRow, valueWhere) == false) {
+                        if (this.select(partObjRow, valueWhere) === false) {
                             amountOfNotSatisfaction++;
                         }
                     }
@@ -77,6 +96,12 @@ class Find {
         return amountOfNotSatisfaction <= 0;
     }
 
+    /**
+     *
+     * @param index int
+     * @param data object
+     * @returns undefined|{[]}
+     */
     getRowByIndex(index, data) {
         if (data[index] !== undefined) {
             return data[index];
@@ -84,7 +109,14 @@ class Find {
         return undefined;
     }
 
-    reconciliation(key, comparison, value, valueRow) {
+    /**
+     *
+     * @param comparison string (=,<.<=,>,>=)
+     * @param value mixed
+     * @param valueRow mixed
+     * @returns boolean
+     */
+    reconciliation(comparison, value, valueRow) {
         switch (comparison) {
             case '=':
                 if (valueRow === value) {
