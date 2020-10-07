@@ -50,7 +50,7 @@ class Query
             console.error(e);
         }
 
-        db.sync();
+        db.sync(this.collection, this.data);
 
         object[fields.AUTO_INCREMENT] = this.data.length - 1;
         return object;
@@ -73,7 +73,7 @@ class Query
             this.data[row[fields.AUTO_INCREMENT]] = Object.assign(this.data[row[fields.AUTO_INCREMENT]], object);
         });
 
-        db.sync();
+        db.sync(this.collection, this.data);
 
         return updatedObjects;
     }
@@ -92,7 +92,7 @@ class Query
             this.data[row[fields.AUTO_INCREMENT]] = null;
         });
 
-        db.sync();
+        db.sync(this.collection, this.data);
     }
 }
 
