@@ -18,9 +18,9 @@ class cliJoin {
         this.database = this.importDB();
 
         if (this.database.collections === undefined || typeof this.database.collections !== "object") {
-            console.error("Collections cannot be loaded");
-            return false;
+            this.createDataBase();
         }
+
 
         for (let collection in this.database.collections) {
              this[collection] = new Query(
@@ -33,9 +33,24 @@ class cliJoin {
     }
 
     /**
-     * Synchronization of variables in memory with localStorage
+     * create data base
      */
-    sync() {
+    createDataBase() {
+        let databaseStructure = {collections:{}};
+        localStorage.setItem(fields.STORE_DB, JSON.stringify(databaseStructure));
+        this.database = this.importDB();
+    }
+
+    /**
+     * Synchronization of variables in memory with localStorage
+     *
+     * @param collection string
+     * @param data array
+     */
+    sync(collection, data) {
+        if (collection !== undefined && typeof data === 'object') {
+           this.database.collections[collection] = data;
+        }
         localStorage.setItem(fields.STORE_DB, JSON.stringify(this.database));
     }
 

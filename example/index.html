@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Example</title>
+    <script src="../build/cliJoin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ant-design-vue/1.6.5/antd.min.js"
+            integrity="sha512-JQAghx8Sc+eHmcTl7wbsIeWt9Ci9j5ON8eLUpyQAoZlwnWWwMeBhq8TceA+v5KmDdPWqC5IFN+ndq0qfwkXh0Q=="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ant-design-vue/1.6.5/antd-with-locales.min.js"
+            integrity="sha512-jtpfFrECBcSIp9zT4pnJrOzN+sHev8MMsNYjz1/pbpxqBwp4KcMJ2VbjlE0e3Ho+ua/ieO/uhZR3G/08EjjhCg=="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ant-design-vue/1.6.5/antd.css"
+          integrity="sha512-Lsx1v2txfQLcaO6yo2O/FAjKGbH4xtPjau5HJnAq+Iv+mwnfwYOZ3XvolMpAWqHYH86RKuLZEBDZqUJB1bq4gQ=="
+          crossorigin="anonymous"/>
+</head>
+<body>
+<div id="app">
+    <a-table :columns="columns" :data-source="rows">
+        <a slot="userId" slot-scope="id">{{ id }}</a>
+    </a-table>
+    <a-alert :message="alert.message" :type="alert.type" show-icon />
+</div>
+
+<script>
+    const columns = [
+        {
+            dataIndex: 'id',
+            key: 'id',
+            slots: {title: 'id'},
+            scopedSlots: {customRender: 'id'},
+        },
+        {
+            title: 'name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'email',
+            dataIndex: 'email',
+            key: 'email',
+        },
+        {
+            title: 'phone',
+            dataIndex: 'phone',
+            key: 'phone',
+        },
+        {
+            title: 'website',
+            dataIndex: 'website',
+            key: 'website',
+        },
+    ];
+
+    db.load();
+    new Vue({
+        el: '#app',
+        data: {
+            rows: [],
+            columns,
+            alert: {
+                message: 'Loading...',
+                type: 'warning'
+            }
+        },
+        mounted: function () {
+            //if the base is not loaded
+            if (db.users === undefined) {
+                db.create('users');
+                fetch('https://jsonplaceholder.typicode.com/users')
+                    .then(result => result.json())
+                    .then(result => {
+                        result.forEach(row => db.users.insert(row));
+                        this.rows = result;
+                        this.alert.message = "Load from ajax";
+                        this.alert.type = "info";
+                    });
+            } else {
+                this.rows = db.users.find({});
+                this.alert.message = "Load from DB";
+                this.alert.type = "success";
+            }
+        },
+        methods: {}
+    })
+</script>
+</body>
+</html>
